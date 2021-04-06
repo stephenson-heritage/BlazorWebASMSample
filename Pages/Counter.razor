@@ -1,0 +1,44 @@
+@page "/counter"
+@inject IJSRuntime _js
+@layout AltLayout
+
+<h1>Counter</h1>
+
+<Greet Message="Welcome to our site!" />
+
+<p>Current count: @currentCount</p>
+
+<div class="greet" @ref="GreetDiv"></div>
+
+<button class="btn btn-primary" @onclick="IncrementCount">Click me</button>
+
+<button @onclick="ShowMessage">Show Message</button>
+<button @onclick="Confirm">Ask?</button>
+<button @onclick="Greet">Greet!</button>
+
+@code {
+    private int currentCount = 0;
+    private ElementReference GreetDiv { get; set; }
+    private void IncrementCount()
+    {
+        currentCount++;
+    }
+
+    private async Task ShowMessage()
+    {
+        await _js.InvokeVoidAsync("dotnet.Message", "this is c#");
+    }
+    private async Task Greet()
+    {
+        await _js.InvokeVoidAsync("dotnet.Greet", "this is c#", GreetDiv);
+    }
+    private async Task Confirm()
+    {
+        bool response = await _js.InvokeAsync<bool>("confirm", "are you sure?");
+
+        if (response)
+        {
+            currentCount++;
+        }
+    }
+}

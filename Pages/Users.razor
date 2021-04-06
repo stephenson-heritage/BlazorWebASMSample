@@ -1,0 +1,27 @@
+@page "/users"
+@using Models.RandomUsers
+@inject HttpClient _httpClient
+
+<h1>Users</h1>
+
+
+@foreach (User u in Randoms)
+{
+    <div>
+        @u.Name.First
+    </div>
+}
+
+<button @onclick="AddUsers">Generate new Users</button>
+@code {
+    private List<User> Randoms { get; set; } = new List<User>();
+
+    public async Task AddUsers()
+    {
+        var data = await _httpClient.GetFromJsonAsync<RandomUsers>("https://randomuser.me/api/?results=3");
+
+        Randoms.AddRange(data.Results);
+    }
+
+
+}
